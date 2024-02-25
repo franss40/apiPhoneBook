@@ -1,0 +1,5 @@
+### Recuperar todas las personas
+GET http://localhost:3001/api/persons
+
+### Mostrar la información del servidor
+GET http://localhost:3001/info
