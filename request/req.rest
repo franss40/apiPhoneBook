@@ -7,3 +7,5 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons/3
 ### Recuperar una persona que no existe
 GET  http://localhost:3001/api/persons/500000
+### Borrar una persona
+DELETE http://localhost:3001/api/persons/3
