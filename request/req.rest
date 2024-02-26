@@ -17,3 +17,26 @@ Content-Type: application/json
   "name": "John",
   "number": "123456"
 }
+### Añadir una persona sin nombre
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "",
+  "number": "123456"
+}
+### Añadir una persona sin number
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "123"
+}
+### Añadir una persona con nombre repetido
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "number": "123456"
+}

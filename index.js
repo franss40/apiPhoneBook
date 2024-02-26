@@ -54,7 +54,21 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post("/api/persons/", (req, res) => {
   const body = req.body
-  
+
+  const istherename = body.hasOwnProperty("name")
+  const istherenumber = body.hasOwnProperty("number")
+
+  if (!istherename || !istherenumber) {
+    return res.status(400).json({ error: "missing body" })
+  }
+  if (!body.name || !body.number) {
+    return res.status(400).json({error: "name or number missing"})
+  }
+  const findName = persons.find((person) => person.name === body.name)
+  if (findName) {
+    return res.status(400).json({ error: "name must be unique" })
+  }
+
   const person = {
     id: Math.floor(Math.random() * 100000),
     name: body.name,
