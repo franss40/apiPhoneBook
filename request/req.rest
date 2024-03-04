@@ -10,7 +10,7 @@ GET  http://localhost:3001/api/persons/500000
 ### Borrar una persona
 DELETE http://localhost:3001/api/persons/3
 ### Añadir una persona
-POST http://localhost:3001/api/persons
+POST https://apiphonebook-ue3u.onrender.com/api/persons
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
   "name": "123"
 }
 ### Añadir una persona con nombre repetido
-POST http://localhost:3001/api/persons
+POST https://apiphonebook-ue3u.onrender.com/api/persons
 Content-Type: application/json
 
 {
