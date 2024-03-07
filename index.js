@@ -1,8 +1,10 @@
-const express = require('express')
+require("dotenv").config()
+const express = require("express")
 const morgan = require("morgan")
+const Person = require('./models/phonebook')
 
 const app = express()
-app.use(express.static('dist'))
+app.use(express.static("dist"))
 
 require("dotenv").config()
 const cors = require("cors")
@@ -49,29 +51,35 @@ let persons = [
 ]
 
 // rutas
-app.get('/info', (req, res) => {
-  const html = `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
-  res.send(html)
+app.get("/info", (req, res) => {
+  Person.find({}).then((result) => {
+    const total = result.length
+    const html = `<p>Phonebook has info for ${total} people</p><p>${new Date()}</p>`
+    res.send(html)
+  })
 })
 
-app.get('/api/persons', (req, res) => {
-  res.json(persons)
+app.get("/api/persons", (req, res) => {
+  Person.find({}).then(result => {
+    res.json(result)
+  })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get("/api/persons/:id", (req, res) => {
+  const id = req.params.id
+  Person.findById(id)
+    .then((result) => {
+      res.json(result)
+    })
+    .catch(error => {
+      res.status(404).end()
+    })
+})
+
+app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id)
-  const findPerson = persons.find(person => person.id === id)
-  if (findPerson) {
-    res.json(findPerson)
-  } else {
-    res.status(404).end()
-  }
-})
-
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-  res.status(204).end() 
+  persons = persons.filter((person) => person.id !== id)
+  res.status(204).end()
 })
 
 app.post("/api/persons/", (req, res) => {
@@ -84,7 +92,7 @@ app.post("/api/persons/", (req, res) => {
     return res.status(400).json({ error: "missing body" })
   }
   if (!body.name || !body.number) {
-    return res.status(400).json({error: "name or number missing"})
+    return res.status(400).json({ error: "name or number missing" })
   }
   const findName = persons.find((person) => person.name === body.name)
   if (findName) {

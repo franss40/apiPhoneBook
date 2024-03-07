@@ -4,7 +4,7 @@ GET http://localhost:3001/api/persons
 ### Mostrar la información del servidor
 GET http://localhost:3001/info
 ### Recuperar una sólo persona
-GET http://localhost:3001/api/persons/3
+GET http://localhost:3001/api/persons/65e8bb270c3582aaf4b44649
 ### Recuperar una persona que no existe
 GET  http://localhost:3001/api/persons/500000
 ### Borrar una persona
