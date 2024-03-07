@@ -1,6 +1,5 @@
 ### Recuperar todas las personas
 GET http://localhost:3001/api/persons
-
 ### Mostrar la información del servidor
 GET http://localhost:3001/info
 ### Recuperar una sólo persona
@@ -10,7 +9,7 @@ GET  http://localhost:3001/api/persons/500000
 ### Borrar una persona
 DELETE http://localhost:3001/api/persons/3
 ### Añadir una persona
-POST https://apiphonebook-ue3u.onrender.com/api/persons
+POST https://localhost:3001/api/persons
 Content-Type: application/json
 
 {
@@ -33,10 +32,27 @@ Content-Type: application/json
   "name": "123"
 }
 ### Añadir una persona con nombre repetido
-POST https://apiphonebook-ue3u.onrender.com/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
   "name": "Ada Lovelace",
   "number": "123456"
 }
+### Recuperar todas las personas desde el servidor
+GET https://apiphonebook-ue3u.onrender.com/api/persons
+### Mostrar la información del servidor
+GET https://apiphonebook-ue3u.onrender.com/info
+### Recuperar una sólo persona desde el servidor
+GET https://apiphonebook-ue3u.onrender.com/api/persons/65e8bb270c3582aaf4b44649
+### Recuperar una sólo persona desde el servidor
+GET https://apiphonebook-ue3u.onrender.com/api/persons/2
+### Añadir una persona desde el servidor
+POST https://apiphonebook-ue3u.onrender.com/api/persons
+Content-Type: application/json
+
+{
+  "name": "John",
+  "number": "123456"
+}
+

@@ -27,7 +27,7 @@ app.use(
   })
 )
 
-let persons = [
+/* let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -48,7 +48,7 @@ let persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
-]
+] */
 
 // rutas
 app.get("/info", (req, res) => {
@@ -94,18 +94,18 @@ app.post("/api/persons/", (req, res) => {
   if (!body.name || !body.number) {
     return res.status(400).json({ error: "name or number missing" })
   }
-  const findName = persons.find((person) => person.name === body.name)
+  /* const findName = persons.find((person) => person.name === body.name)
   if (findName) {
     return res.status(400).json({ error: "name must be unique" })
-  }
+  } */
 
-  const person = {
-    id: Math.floor(Math.random() * 100000),
+  const person = new Person({
     name: body.name,
-    number: body.number,
-  }
-  persons = persons.concat(person)
-  res.json(person)
+    number: body.number
+  })
+  person.save().then(result => {
+    res.json(result)
+  })
 })
 
 const PORT = process.env.PORT || 3001
