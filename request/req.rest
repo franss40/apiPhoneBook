@@ -6,6 +6,8 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons/65e8bb270c3582aaf4b44649
 ### Recuperar una persona que no existe
 GET  http://localhost:3001/api/persons/65e8bb270c3582aaf4b4464d
+### Recuperar una persona que no existe con id mal formateado
+GET  http://localhost:3001/api/persons/65e8bb27
 ### Borrar una persona
 DELETE http://localhost:3001/api/persons/65ea1e01cfbdc996f5986188
 ### Añadir una persona
