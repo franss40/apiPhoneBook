@@ -10,6 +10,10 @@ GET  http://localhost:3001/api/persons/65e8bb270c3582aaf4b4464d
 GET  http://localhost:3001/api/persons/65e8bb27
 ### Borrar una persona
 DELETE http://localhost:3001/api/persons/65ea1e01cfbdc996f5986188
+### Borrar una persona que no existe
+DELETE http://localhost:3001/api/persons/65ea1e01cfbdc996f5986185
+### Borrar una persona que no existe e id mal formateado
+DELETE http://localhost:3001/api/persons/65ea1
 ### Añadir una persona
 POST https://localhost:3001/api/persons
 Content-Type: application/json
@@ -38,8 +42,8 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-  "name": "Ada Lovelace",
-  "number": "123456"
+  "name": "Ada Lovelaceee",
+  "number": "55555"
 }
 ### Recuperar todas las personas desde el servidor
 GET https://apiphonebook-ue3u.onrender.com/api/persons
