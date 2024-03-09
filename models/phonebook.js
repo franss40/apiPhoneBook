@@ -17,7 +17,17 @@ const bookSchema = new mongoose.Schema({
     minLength: [3, "minimum required 3 characters"],
     required: true,
   },
-  number: {type: String, required: true},
+  number: {
+    type: String,
+    minLength: [8, "minimum required 3 characters"],
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /\d{2,3}-\d/.test(v)
+      },
+      message: (props) => `${props.value} is not a valid phone number!`,
+    }
+  },
 })
 
 bookSchema.set("toJSON", {
