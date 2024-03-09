@@ -19,7 +19,7 @@ const bookSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minLength: [8, "minimum required 3 characters"],
+    minLength: [8, "minimum required 8 characters"],
     required: true,
     validate: {
       validator: function (v) {
