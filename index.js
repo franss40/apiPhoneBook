@@ -29,18 +29,22 @@ app.use(
 )
 
 // rutas
-app.get("/info", (req, res) => {
-  Person.find({}).then((result) => {
-    const total = result.length
-    const html = `<p>Phonebook has info for ${total} people</p><p>${new Date()}</p>`
-    res.send(html)
-  })
+app.get("/info", (req, res, next) => {
+  Person.find({})
+    .then((result) => {
+      const total = result.length
+      const html = `<p>Phonebook has info for ${total} people</p><p>${new Date()}</p>`
+      res.send(html)
+    })
+    .catch(error => next(error))
 })
 
 app.get("/api/persons", (req, res) => {
-  Person.find({}).then(result => {
-    res.json(result)
-  })
+  Person.find({})
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => next(error))
 })
 
 app.get("/api/persons/:id", (req, res, next) => {
@@ -52,10 +56,7 @@ app.get("/api/persons/:id", (req, res, next) => {
         res.status(404).end()
       }
     })
-    .catch((error) => {
-      console.log(error)
-      next(error)
-    })
+    .catch(error => next(error))
 })
 
 app.delete("/api/persons/:id", (req, res, next) => {
@@ -63,25 +64,12 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .then(result => {
       res.status(204).end()
     })
-    .catch(error => {
-      console.log(error)
-      next(error)
-    })
+    .catch(error => next(error))
 })
 
 app.post("/api/persons/", (req, res, next) => {
   const body = req.body
-
-  const istherename = body.hasOwnProperty("name")
-  const istherenumber = body.hasOwnProperty("number")
-
-  if (!istherename || !istherenumber) {
-    return res.status(400).json({ error: "missing body" })
-  }
-  if (!body.name || !body.number) {
-    return res.status(400).json({ error: "name or number missing" })
-  }
-
+  
   Person.findOne({name: body.name})
     .then(result => {
       if (!result) {
@@ -89,48 +77,42 @@ app.post("/api/persons/", (req, res, next) => {
           name: body.name,
           number: body.number,
         })
-        person.save().then((result) => {
-          res.json(result)
-        })
+        person.save()
+          .then((result) => {
+            res.json(result)
+          })
+          .catch(error => next(error))
       } else {
         const person = {
           name: body.name,
           number: body.number,
         }
         const id = result._id.toString()
-        console.log('id', id)
-        Person.findByIdAndUpdate(id, person, { new: true })
-          .then((result2) => {
-            res.json(result2)
+        
+        Person.findByIdAndUpdate(id, person, {new: true, runValidators: true})
+          .then((result) => {
+            res.json(result)
           })
-          .catch((error) => next(error))
+          .catch(error => next(error))
       }
     })
-    .catch(error => {
-      console.log(error)
-      next(error)
-    })
+    .catch(error => next(error))
 })
 
 app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body
   const id = req.params.id
-  const istherename = body.hasOwnProperty("name")
-  const istherenumber = body.hasOwnProperty("number")
-
-  if (!istherename || !istherenumber) {
-    return res.status(400).json({ error: "missing body" })
-  }
-  if (!body.name || !body.number) {
-    return res.status(400).json({ error: "name or number missing" })
-  }
 
   const person = {
     name: body.name,
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(id, person, { new: true })
+  Person.findByIdAndUpdate(id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((result) => {
       res.json(result)
     })
@@ -146,6 +128,9 @@ const errorHandler = (error, req, res, next) => {
   console.log(error.message)
   if (error.name === 'CastError') {
     return res.status(400).send({error: 'malformatted id'})
+  }
+  if (error.name === 'ValidationError') {
+    return res.status(404).json({error: error.message})
   }
   next(error)
 }

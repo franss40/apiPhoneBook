@@ -12,8 +12,12 @@ mongoose.connect(url)
   })
 
 const bookSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: [3, "minimum required 3 characters"],
+    required: true,
+  },
+  number: {type: String, required: true},
 })
 
 bookSchema.set("toJSON", {
