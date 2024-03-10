@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 
-const arguments = process.argv.length
+const argumentsLength = process.argv.length
 
-if (arguments < 3 || arguments > 5) {
-  console.log("data missing")
+if (argumentsLength < 3 || argumentsLength > 5) {
+  console.log('data missing')
   process.exit(1)
 }
 
@@ -16,12 +16,12 @@ const bookShema = new mongoose.Schema({
   name: String,
   number: String,
 })
-const Person = mongoose.model("Person", bookShema)
+const Person = mongoose.model('Person', bookShema)
 
-if (arguments === 3) {
-  Person.find({}).then(result => {
+if (argumentsLength === 3) {
+  Person.find({}).then((result) => {
     console.log('phonebook:')
-    result.forEach(person => {
+    result.forEach((person) => {
       console.log(person.name, person.number)
     })
     mongoose.connection.close()
@@ -31,11 +31,11 @@ if (arguments === 3) {
   const number = process.argv[4]
 
   const person = new Person({
-    name: name,
-    number: number,
+    name,
+    number,
   })
-  person.save().then((result) => {
-    console.log("person save")
+  person.save().then(() => {
+    console.log('person save')
     mongoose.connection.close()
   })
 }

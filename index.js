@@ -1,37 +1,37 @@
-require("dotenv").config()
-const express = require("express")
-const morgan = require("morgan")
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
 const Person = require('./models/phonebook')
 
 const app = express()
-app.use(express.static("dist"))
+app.use(express.static('dist'))
 
-require("dotenv").config()
-const cors = require("cors")
-const { SchemaTypes } = require("mongoose")
+require('dotenv').config()
+/* const { SchemaTypes } = require('mongoose') */
 app.use(cors())
 
 app.use(express.json())
-app.use(
-  morgan(function (tokens, req, res) {
-    return [
-      tokens.method(req, res),
-      tokens.url(req, res),
-      tokens.status(req, res),
-      tokens.res(req, res, "content-length"),
-      "-",
-      tokens["response-time"](req, res),
-      "ms",
-      tokens.res(req, res, ":res[header]"),
-      JSON.stringify(req.body),
-    ].join(" ")
-  })
-)
+
+function configurationMorgan(tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'),
+    '-',
+    tokens['response-time'](req, res),
+    'ms',
+    tokens.res(req, res, ':res[header]'),
+    JSON.stringify(req.body),
+  ].join(' ')
+}
+app.use(morgan(configurationMorgan))
 
 // rutas
-app.get("/info", (req, res, next) => {
+app.get('/info', (req, res, next) => {
   Person.find({})
-    .then((result) => {
+    .then(result => {
       const total = result.length
       const html = `<p>Phonebook has info for ${total} people</p><p>${new Date()}</p>`
       res.send(html)
@@ -39,17 +39,17 @@ app.get("/info", (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.get("/api/persons", (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({})
     .then(result => {
       res.json(result)
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
-app.get("/api/persons/:id", (req, res, next) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
-    .then((result) => {
+    .then(result => {
       if (result) {
         res.json(result)
       } else {
@@ -59,49 +59,46 @@ app.get("/api/persons/:id", (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.delete("/api/persons/:id", (req, res, next) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
 })
 
-app.post("/api/persons/", (req, res, next) => {
-  const body = req.body
-  
-  Person.findOne({name: body.name})
+app.post('/api/persons/', (req, res, next) => {
+  const { name, number } = req.body
+
+  Person.findOne({ name })
     .then(result => {
       if (!result) {
         const person = new Person({
-          name: body.name,
-          number: body.number,
+          name,
+          number,
         })
         person.save()
-          .then((result) => {
-            res.json(result)
-          })
+          .then(savePerson => res.json(savePerson))
           .catch(error => next(error))
       } else {
         const person = {
-          name: body.name,
-          number: body.number,
+          name,
+          number,
         }
+        // eslint-disable-next-line no-underscore-dangle
         const id = result._id.toString()
-        
-        Person.findByIdAndUpdate(id, person, {new: true, runValidators: true})
-          .then((result) => {
-            res.json(result)
-          })
+
+        Person.findByIdAndUpdate(id, person, { new: true, runValidators: true })
+          .then(updatePerson => res.json(updatePerson))
           .catch(error => next(error))
       }
     })
     .catch(error => next(error))
 })
 
-app.put("/api/persons/:id", (req, res, next) => {
-  const body = req.body
-  const id = req.params.id
+app.put('/api/persons/:id', (req, res, next) => {
+  const { body } = req
+  const { id } = req.params
 
   const person = {
     name: body.name,
@@ -111,28 +108,28 @@ app.put("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndUpdate(id, person, {
     new: true,
     runValidators: true,
-    context: "query",
+    context: 'query',
   })
-    .then((result) => {
+    .then(result => {
       res.json(result)
     })
-    .catch((error) => next(error))
+    .catch(error => next(error))
 })
 
 const unkKnownEndPoint = (req, res) => {
-  res.status(404).send({error: 'unKnown endPoint'})
+  res.status(404).send({ error: 'unKnown endPoint' })
 }
 app.use(unkKnownEndPoint)
 
 const errorHandler = (error, req, res, next) => {
   console.log(error.message)
   if (error.name === 'CastError') {
-    return res.status(400).send({error: 'malformatted id'})
+    return res.status(400).send({ error: 'malformatted id' })
   }
   if (error.name === 'ValidationError') {
-    return res.status(404).json({error: error.message})
+    return res.status(404).json({ error: error.message })
   }
-  next(error)
+  return next(error)
 }
 app.use(errorHandler)
 

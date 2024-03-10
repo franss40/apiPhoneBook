@@ -1,10 +1,12 @@
-const mongoose = require("mongoose")
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
+const mongoose = require('mongoose')
 
 const url = process.env.MONGODB_URI
 
-mongoose.set("strictQuery", false)
+mongoose.set('strictQuery', false)
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
@@ -14,23 +16,21 @@ mongoose.connect(url)
 const bookSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: [3, "minimum required 3 characters"],
+    minLength: [3, 'minimum required 3 characters'],
     required: true,
   },
   number: {
     type: String,
-    minLength: [8, "minimum required 8 characters"],
+    minLength: [8, 'minimum required 8 characters'],
     required: true,
     validate: {
-      validator: function (v) {
-        return /\d{2,3}-\d/.test(v)
-      },
+      validator: v => /\d{2,3}-\d/.test(v),
       message: (props) => `${props.value} is not a valid phone number!`,
-    }
+    },
   },
 })
 
-bookSchema.set("toJSON", {
+bookSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -38,5 +38,5 @@ bookSchema.set("toJSON", {
   },
 })
 
-const Person = mongoose.model("Person", bookSchema)
+const Person = mongoose.model('Person', bookSchema)
 module.exports = Person
